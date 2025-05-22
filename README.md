@@ -9,8 +9,8 @@ http://localhost:8080/swagger-ui/index.html
 БД postgreSQL
 Cache Redis
 
-Для запуска локально требуется установленный redis на пк
-Для запуска в docker еобходимо установить docker
+Для запуска локально требуется установленные Redis и PostgreSQL на пк \
+Для запуска в docker необходимо установить Docker
 
 # Настройки подключения:
 
