@@ -1,0 +1,45 @@
+-- Создание таблицы users
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Создание таблицы accounts
+CREATE TABLE IF NOT EXISTS accounts (
+    id BIGSERIAL PRIMARY KEY,
+    balance DECIMAL(19,4) NOT NULL CHECK (balance >= 0),
+    initial_deposit DECIMAL(19,4) NOT NULL,
+    version BIGINT NOT NULL DEFAULT 0,
+    user_id BIGINT NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Создание таблицы emails
+CREATE TABLE IF NOT EXISTS emails (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Создание таблицы phones
+CREATE TABLE IF NOT EXISTS phones (
+    id BIGSERIAL PRIMARY KEY,
+    phone VARCHAR(20) NOT NULL UNIQUE CHECK (phone ~ '^7\d{10}$'),
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Индексы для улучшения производительности
+CREATE INDEX idx_user_email ON emails(user_id);
+CREATE INDEX idx_user_phone ON phones(user_id);
